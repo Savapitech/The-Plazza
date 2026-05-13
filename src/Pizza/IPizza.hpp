@@ -11,6 +11,8 @@
 #include <cstdint>
 #include <memory>
 #include <iomanip>
+#include <map>
+#include <vector>
 
 enum Ingredients : uint16_t {
     AUCUN = 0,
@@ -40,11 +42,39 @@ enum PizzaSize {
     XXL = 16
 };
 
+static inline std::map<PizzaSize, std::string> sizeToString = {
+    {PizzaSize::S, "S"},
+    {PizzaSize::M, "M"},
+    {PizzaSize::L, "L"},
+    {PizzaSize::XL, "XL"},
+    {PizzaSize::XXL, "XXL"}
+};
+
+static inline std::map<Ingredients, std::string> ingredientsToString = {
+    {DOUGH, "Dough"},
+    {TOMATO, "Tomato"},
+    {GRUYERE, "Gruyere"},
+    {HAM, "Ham"},
+    {MUSHROOMS, "Mushrooms"},
+    {STEAK, "Steak"},
+    {EGGPLANT, "Eggplant"},
+    {GOATCHEESE, "Goat cheese"},
+    {CHIEFLOVE, "Chief love"}
+};
+
+
 namespace plazza {
     class IPizza {
         public:
-            IPizza(PizzaSize size);
+            IPizza(PizzaSize size) {};
             virtual ~IPizza() = default;
+
+            virtual PizzaSize getSize() const = 0;
+            virtual std::string getSizeString() const = 0;
+
+            virtual Ingredients getIngredients() const = 0;
+            virtual std::vector<std::string> getIngredientsList() const = 0;
+
         protected:
         private:
     };

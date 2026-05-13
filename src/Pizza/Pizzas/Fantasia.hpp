@@ -8,17 +8,16 @@
 #ifndef FANTASIA_HPP_
 #define FANTASIA_HPP_
 
-#include "IPizza.hpp"
+#include "APizza.hpp"
+
 
 namespace plazza {
-    class Fantasia : public IPizza {
+    class Fantasia : public APizza {
         public:
             Fantasia(PizzaSize size);
             ~Fantasia();
-
         protected:
         private:
-            PizzaSize _size;
     };
 }
 

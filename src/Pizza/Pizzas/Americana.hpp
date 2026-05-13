@@ -8,18 +8,15 @@
 #ifndef AMERICANA_HPP_
 #define AMERICANA_HPP_
 
-#include "IPizza.hpp"
+#include "APizza.hpp"
 
 namespace plazza {
-    class Americana : public IPizza {
+    class Americana : public APizza {
         public:
             Americana(PizzaSize size);
             ~Americana();
-
         protected:
         private:
-            PizzaSize _size;
-            Ingredients _ingredients;
     };
 }
 

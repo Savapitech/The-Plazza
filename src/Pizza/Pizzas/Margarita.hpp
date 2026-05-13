@@ -8,18 +8,17 @@
 #ifndef MARGARITA_HPP_
 #define MARGARITA_HPP_
 
-#include "IPizza.hpp"
+#include "APizza.hpp"
+
 
 namespace plazza
 {
-    class Margarita : public IPizza {
+    class Margarita : public APizza {
         public:
             Margarita(PizzaSize size);
             ~Margarita();
-
         protected:
         private:
-            PizzaSize _size;
     };
 } // namespace plazza
 
