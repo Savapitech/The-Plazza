@@ -1,2 +1,4 @@
 plazza
 .build
+clang++
+.vscode
