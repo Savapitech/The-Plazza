@@ -10,19 +10,15 @@
 
 #include "APizza.hpp"
 
+namespace plazza {
+class Margarita : public APizza {
+public:
+  Margarita(PizzaSize size);
+  ~Margarita();
 
-namespace plazza
-{
-    class Margarita : public APizza {
-        public:
-            Margarita(PizzaSize size);
-            ~Margarita();
-        protected:
-        private:
-    };
+protected:
+private:
+};
 } // namespace plazza
-
-
-
 
 #endif /* !MARGARITA_HPP_ */

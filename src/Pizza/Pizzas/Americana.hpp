@@ -11,13 +11,14 @@
 #include "APizza.hpp"
 
 namespace plazza {
-    class Americana : public APizza {
-        public:
-            Americana(PizzaSize size);
-            ~Americana();
-        protected:
-        private:
-    };
-}
+class Americana : public APizza {
+public:
+  Americana(PizzaSize size);
+  ~Americana();
+
+protected:
+private:
+};
+} // namespace plazza
 
 #endif /* !AMERICANA_HPP_ */

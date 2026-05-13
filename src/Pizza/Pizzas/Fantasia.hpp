@@ -10,15 +10,15 @@
 
 #include "APizza.hpp"
 
-
 namespace plazza {
-    class Fantasia : public APizza {
-        public:
-            Fantasia(PizzaSize size);
-            ~Fantasia();
-        protected:
-        private:
-    };
-}
+class Fantasia : public APizza {
+public:
+  Fantasia(PizzaSize size);
+  ~Fantasia();
+
+protected:
+private:
+};
+} // namespace plazza
 
 #endif /* !FANTASIA_HPP_ */
