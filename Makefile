@@ -1,6 +1,6 @@
 MAKE_FLAGS += -j
 
-SRC := $(wildcard src/*.cpp) $(wildcard src/Pizza/*.cpp) $(wildcard src/Pizza/Pizzas/*.cpp)
+SRC := $(wildcard src/*.cpp) $(wildcard src/Pizza/*.cpp) $(wildcard src/Pizza/Pizzas/*.cpp) $(wildcard src/IPC/*.cpp) $(wildcard src/Logger/*.cpp)
 
 BUILD_DIR := .build
 
@@ -13,6 +13,8 @@ CXXFLAGS += -Wwrite-strings -Werror=format-nonliteral -Werror=return-type
 CXXFLAGS += -std=c++20 -iquote src -iquote src/Server -iquote src/Client -iquote libs/myteams
 CXXFLAGS += -Isrc/Pizza
 CXXFLAGS += -Isrc/Pizza/Pizzas
+CXXFLAGS += -Isrc/IPC
+CXXFLAGS += -Isrc/Logger
 
 include utils.mk
 
