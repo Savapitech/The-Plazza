@@ -48,7 +48,7 @@ static inline std::map<Ingredients, std::string> ingredientsToString = {
 namespace plazza {
 class IPizza {
 public:
-  IPizza(PizzaSize size){};
+  IPizza(PizzaSize size) {};
   virtual ~IPizza() = default;
 
   virtual PizzaSize getSize() const = 0;
