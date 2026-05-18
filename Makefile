@@ -15,6 +15,8 @@ CXXFLAGS += -Isrc/Pizza
 CXXFLAGS += -Isrc/Pizza/Pizzas
 CXXFLAGS += -Isrc/Kitchens
 CXXFLAGS += -lpthread
+CXXFLAGS += -Isrc/IPC
+CXXFLAGS += -Isrc/Logger
 
 include utils.mk
 
