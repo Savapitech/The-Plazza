@@ -3,54 +3,44 @@
  * EPITECH PROJECT - Tue, May, 2026                                                     *
  * Title           - Plazza                                                             *
  * Description     -                                                                    *
- *     ThreadPool                                                                       *
+ *     Kitchens                                                                         *
  *                                                                                      *
  * ------------------------------------------------------------------------------------ *
  *                                                                                      *
- *       ▄▀▀█▄▄▄▄  ▄▀▀▄▀▀▀▄  ▄▀▀█▀▄    ▄▀▀▀█▀▀▄  ▄▀▀█▄▄▄▄  ▄▀▄▄▄▄   ▄▀▀▄ ▄▄             *
- *      ▐  ▄▀   ▐ █   █   █ █   █  █  █    █  ▐ ▐  ▄▀   ▐ █ █    ▌ █  █   ▄▀            *
- *        █▄▄▄▄▄  ▐  █▀▀▀▀  ▐   █  ▐  ▐   █       █▄▄▄▄▄  ▐ █      ▐  █▄▄▄█             *
- *        █    ▌     █          █        █        █    ▌    █         █   █             *
- *       ▄▀▄▄▄▄    ▄▀        ▄▀▀▀▀▀▄   ▄▀        ▄▀▄▄▄▄    ▄▀▄▄▄▄▀   ▄▀  ▄▀             *
- *       █    ▐   █         █       █ █          █    ▐   █     ▐   █   █               *
- *       ▐        ▐         ▐       ▐ ▐          ▐        ▐         ▐   ▐               *
+ *             ███████╗██████╗ ██╗████████╗███████╗ ██████╗██╗  ██╗                     *
+ *             ██╔════╝██╔══██╗██║╚══██╔══╝██╔════╝██╔════╝██║  ██║                     *
+ *             █████╗  ██████╔╝██║   ██║   █████╗  ██║     ███████║                     *
+ *             ██╔══╝  ██╔═══╝ ██║   ██║   ██╔══╝  ██║     ██╔══██║                     *
+ *             ███████╗██║     ██║   ██║   ███████╗╚██████╗██║  ██║                     *
+ *             ╚══════╝╚═╝     ╚═╝   ╚═╝   ╚══════╝ ╚═════╝╚═╝  ╚═╝                     *
  *                                                                                      *
  * ------------------------------------------------------------------------------------ */
 
-#ifndef INCLUDED_THREADPOOL_HPP
-    #define INCLUDED_THREADPOOL_HPP
+#ifndef INCLUDED_KITCHENS_HPP
+    #define INCLUDED_KITCHENS_HPP
 
 #include <iostream>
-#include <thread>
-#include <vector>
-#include <mutex>
-#include <condition_variable>
+#include <chrono>
 #include "IPizza.hpp"
+#include "ThreadPool.hpp"
 
 namespace plazza {
-    class ThreadPool
+    class Kitchens
     {
         private:
         protected:
-            std::vector<std::thread> _cooks;
-            std::vector<std::unique_ptr<IPizza>> _tasks;
-            mutable std::mutex _mtx;
-            std::condition_variable _cv;
-            int _nbCooks;
-            bool _stop;
-            int _activeCooks;
+            ThreadPool _threadPool;
+            Ingredients _stock;
+            bool _run;
+            std::chrono::time_point<std::chrono::steady_clock> _lastActivity;
         public:
-            ThreadPool() = default;
-            ThreadPool(int nbCooks);
-            void addPizza(std::unique_ptr<IPizza> pizza);
-            void cooking();
-            std::size_t getTasksCount() const;
-            std::size_t getActiveCooksCount() const;
-            ThreadPool &operator=(ThreadPool const &);
-            ~ThreadPool();
+            Kitchens(int nbCooks);
+            void setOrders(std::vector<std::unique_ptr<IPizza>> orders);
+            void setStock(Ingredients stock);
+            void run();
+            ~Kitchens() = default;
     };
 }
-
 
 #endif
 
