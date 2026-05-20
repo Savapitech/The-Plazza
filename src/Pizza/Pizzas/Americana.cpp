@@ -10,6 +10,8 @@
 plazza::Americana::Americana(PizzaSize size) : APizza(size) {
   _size = size;
   _ingredients = static_cast<Ingredients>(DOUGH | TOMATO | GRUYERE | STEAK);
+  _type = "Americana";
+  _bakingTime = 2;
 }
 
 plazza::Americana::~Americana() {}

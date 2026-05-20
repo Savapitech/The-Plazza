@@ -30,3 +30,7 @@ std::vector<std::string> plazza::APizza::getIngredientsList() const {
   }
   return listIngredients;
 }
+
+std::string plazza::APizza::getType() const { return _type; }
+
+size_t plazza::APizza::getBakingTime() const { return _bakingTime; }

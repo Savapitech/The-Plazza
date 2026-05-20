@@ -22,9 +22,14 @@ public:
   Ingredients getIngredients() const override;
   std::vector<std::string> getIngredientsList() const override;
 
+  std::string getType() const override;
+  size_t getBakingTime() const override;
+
 protected:
   PizzaSize _size;
   Ingredients _ingredients;
+  std::string _type;
+  size_t _bakingTime;
 
 private:
 };
