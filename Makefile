@@ -15,6 +15,7 @@ CXXFLAGS += -Isrc/Pizza
 CXXFLAGS += -Isrc/Pizza/Pizzas
 CXXFLAGS += -Isrc/Kitchens
 CXXFLAGS += -lpthread
+CXXFLAGS += -Isrc/Parsing_orders
 
 include utils.mk
 

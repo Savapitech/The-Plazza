@@ -57,6 +57,9 @@ public:
   virtual Ingredients getIngredients() const = 0;
   virtual std::vector<std::string> getIngredientsList() const = 0;
 
+  virtual std::string getType() const = 0;
+  virtual size_t getBakingTime() const = 0;
+
 protected:
 private:
 };
