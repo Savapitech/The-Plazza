@@ -8,10 +8,11 @@
 #ifndef PARSING_HPP_
 #define PARSING_HPP_
 
+#include <map>
+#include <iostream>
+
 #include "Order.hpp"
 #include "PizzaFactory.hpp"
-#include "map"
-#include <iostream>
 
 static inline std::map<std::string, PizzaType> stringToPizzaType = {
     {"americana", Americana},
