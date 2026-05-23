@@ -29,6 +29,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.branch-names.outputs.head_ref_branch }}
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y clang libcriterion-dev python3
+
       - name: Build project
         run: make
 
