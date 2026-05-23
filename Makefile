@@ -1,6 +1,6 @@
 MAKE_FLAGS += -j
 
-SRC := $(wildcard src/*.cpp) $(wildcard src/Pizza/*.cpp) $(wildcard src/Pizza/Pizzas/*.cpp) $(wildcard src/Kitchens/*.cpp)
+SRC := $(wildcard src/*.cpp) $(wildcard src/Pizza/*.cpp) $(wildcard src/Pizza/Pizzas/*.cpp) $(wildcard src/IPC/*.cpp) $(wildcard src/Logger/*.cpp) $(wildcard src/Parsing_orders/*.cpp) $(wildcard src/Concurrency/*.cpp) $(wildcard src/Kitchen/*.cpp) $(wildcard src/Reception/*.cpp)
 
 BUILD_DIR := .build
 
@@ -18,6 +18,11 @@ CXXFLAGS += -lpthread
 CXXFLAGS += -Isrc/Parsing_orders
 CXXFLAGS += -Isrc/IPC
 CXXFLAGS += -Isrc/Logger
+CXXFLAGS += -Isrc/Concurrency
+CXXFLAGS += -Isrc/Kitchen
+CXXFLAGS += -Isrc/Reception
+
+LDLIBS += -lpthread
 
 include utils.mk
 
@@ -69,9 +74,8 @@ clean:
 	@ $(LOG_TIME) "$(C_YELLOW) RM $(C_PURPLE) $(OBJ) $(C_RESET)"
 
 fclean:
-	@ $(RM) -r $(NAME_server) $(NAME_client) $(BUILD_DIR)
-	@ $(LOG_TIME) "$(C_YELLOW) RM $(C_PURPLE) $(NAME_server) $(NAME_client) $(BUILD_DIR) \
-		$(C_RESET)"
+	@ $(RM) -r $(NAME_release) $(BUILD_DIR)
+	@ $(LOG_TIME) "$(C_YELLOW) RM $(C_PURPLE) $(NAME_release) $(BUILD_DIR) $(C_RESET)"
 
 .NOTPARALLEL: re
 re:	fclean all
