@@ -4,8 +4,8 @@
 #include <string>
 #include <unistd.h>
 
-#include "Logger/Logger.hpp"
 #include "Channel.hpp"
+#include "Logger/Logger.hpp"
 
 namespace plazza {
 

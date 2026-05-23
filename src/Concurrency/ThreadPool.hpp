@@ -13,26 +13,26 @@ namespace plazza {
 
 class ThreadPool {
 public:
-    explicit ThreadPool(size_t n);
-    ~ThreadPool();
+  explicit ThreadPool(size_t n);
+  ~ThreadPool();
 
-    ThreadPool(const ThreadPool &) = delete;
-    ThreadPool &operator=(const ThreadPool &) = delete;
+  ThreadPool(const ThreadPool &) = delete;
+  ThreadPool &operator=(const ThreadPool &) = delete;
 
-    void enqueue(std::function<void()> task);
-    size_t busy() const;
-    size_t size() const;
-    size_t pending() const;
+  void enqueue(std::function<void()> task);
+  size_t busy() const;
+  size_t size() const;
+  size_t pending() const;
 
 private:
-    void workerLoop();
+  void workerLoop();
 
-    std::vector<Thread> _workers;
-    std::queue<std::function<void()>> _tasks;
-    mutable Mutex _mutex;
-    CondVar _cond;
-    std::atomic<bool> _stop;
-    size_t _busyCount;
+  std::vector<Thread> _workers;
+  std::queue<std::function<void()>> _tasks;
+  mutable Mutex _mutex;
+  CondVar _cond;
+  std::atomic<bool> _stop;
+  size_t _busyCount;
 };
 
 } // namespace plazza

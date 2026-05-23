@@ -9,10 +9,8 @@
 #define PARSING_HPP_
 
 #include <map>
-#include <iostream>
 
 #include "Order.hpp"
-#include "PizzaFactory.hpp"
 
 static inline std::map<std::string, PizzaType> stringToPizzaType = {
     {"americana", Americana},

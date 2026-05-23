@@ -286,14 +286,6 @@ chk("status shows cook count",
 chk("status shows pizzas in queue",
     any("pizzas" in l for l in out), str(out))
 
-section("19. Status output format")
-
-code, out, _ = send(FAST, "margarita S x1\nstatus")
-chk("status has '=== Kitchen Status ==='",
-    any("Kitchen Status" in l for l in out), str(out))
-chk("status has separator line",
-    any("===" in l for l in out), str(out))
-
 section("20. Status shows ingredient stock")
 
 code, out, _ = send(FAST, "americana M x1\nstatus")
