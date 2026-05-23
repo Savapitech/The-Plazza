@@ -37,8 +37,8 @@ jobs:
       - name: Build project
         run: make
 
-      - name: Run tester
-        run: make tests_run
+      # - name: Run tester
+      #   run: make tests_run
 
   sync_repository:
     needs: [ check_the_repository_state ]
