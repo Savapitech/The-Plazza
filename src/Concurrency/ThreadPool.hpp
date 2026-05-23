@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <functional>
 #include <queue>
 #include <vector>
@@ -30,7 +31,7 @@ private:
     std::queue<std::function<void()>> _tasks;
     mutable Mutex _mutex;
     CondVar _cond;
-    bool _stop;
+    std::atomic<bool> _stop;
     size_t _busyCount;
 };
 

@@ -10,11 +10,10 @@ ThreadPool::ThreadPool(size_t n) : _stop(false), _busyCount(0) {
 }
 
 ThreadPool::~ThreadPool() {
-    {
-        std::unique_lock<std::mutex> lock(_mutex.native());
-        _stop = true;
-    }
+    _stop.store(true);
     _cond.notifyAll();
+    for (auto &w : _workers)
+        w.join();
 }
 
 void ThreadPool::enqueue(std::function<void()> task) {
@@ -44,8 +43,8 @@ void ThreadPool::workerLoop() {
         std::function<void()> task;
         {
             std::unique_lock<std::mutex> lock(_mutex.native());
-            _cond.wait(lock, [this] { return _stop || !_tasks.empty(); });
-            if (_stop && _tasks.empty())
+            _cond.wait(lock, [this] { return _stop.load() || !_tasks.empty(); });
+            if (_stop.load() && _tasks.empty())
                 return;
             task = std::move(_tasks.front());
             _tasks.pop();
