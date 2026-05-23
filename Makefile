@@ -56,9 +56,6 @@ all: $(NAME_release)
 debug: CXXFLAGS += -D DEBUG_MODE
 debug: all
 
-tests: $(NAME_test)
-	@ bash tests/run_all.sh
-
 format:
 	@ find ./ -name "*.cpp" -type f -exec clang-format -i {} ";"
 	@ find ./ -name "*.hpp" -type f -exec clang-format -i {} ";"
@@ -74,13 +71,82 @@ clean:
 	@ $(LOG_TIME) "$(C_YELLOW) RM $(C_PURPLE) $(OBJ) $(C_RESET)"
 
 fclean:
-	@ $(RM) -r $(NAME_release) $(BUILD_DIR)
+	@ $(RM) -r $(NAME_release) $(BUILD_DIR) tests/unit/unit_tests .cov $(PROF_DIR)
 	@ $(LOG_TIME) "$(C_YELLOW) RM $(C_PURPLE) $(NAME_release) $(BUILD_DIR) $(C_RESET)"
 
 .NOTPARALLEL: re
 re:	fclean all
 
-.PHONY: all clean fclean re
+TESTS_DIR := tests
+
+UNIT_SRC := $(TESTS_DIR)/unit/test_plazza.cpp \
+            src/Parsing_orders/Order.cpp \
+            src/Parsing_orders/Parsing.cpp \
+            src/Pizza/APizza.cpp \
+            src/Pizza/PizzaFactory.cpp \
+            src/Pizza/Pizzas/Americana.cpp \
+            src/Pizza/Pizzas/Fantasia.cpp \
+            src/Pizza/Pizzas/Margarita.cpp \
+            src/Pizza/Pizzas/Regina.cpp \
+            src/Concurrency/Thread.cpp \
+            src/Concurrency/ThreadPool.cpp
+
+UNIT_INC := -std=c++20 \
+            -Isrc/Pizza -Isrc/Pizza/Pizzas -Isrc/Parsing_orders \
+            -Isrc/IPC -Isrc/Logger -Isrc/Concurrency \
+            -Isrc/Kitchen -Isrc/Reception \
+            -Wall -Wextra
+
+$(eval $(call mk-profile, unit, UNIT_SRC, , $(TESTS_DIR)/unit/unit_tests))
+
+$(NAME_unit): CXXFLAGS := $(UNIT_INC) -I/opt/homebrew/opt/criterion/include
+$(NAME_unit): LDLIBS := -L/opt/homebrew/opt/criterion/lib -lcriterion -lpthread
+
+.PHONY: tests_unit
+tests_unit: $(NAME_unit)
+	./$(NAME_unit) --verbose
+
+.PHONY: tests_functional
+tests_functional: all
+	@ python3 $(TESTS_DIR)/functional/test_plazza.py
+
+.PHONY: tests_run
+tests_run: tests_unit tests_functional
+
+COV_FLAGS := -fprofile-instr-generate -fcoverage-mapping -O0
+PROF_DIR  := .cov
+PROF_DATA := $(PROF_DIR)/merged.profdata
+
+$(eval $(call mk-profile, unit_cov, UNIT_SRC, , $(PROF_DIR)/unit_tests_cov))
+$(eval $(call mk-profile, main_cov, SRC,       , $(PROF_DIR)/plazza_cov))
+
+$(PROF_DIR):
+	@ mkdir -p $@
+
+$(NAME_unit_cov): CXXFLAGS := $(UNIT_INC) -I/opt/homebrew/opt/criterion/include $(COV_FLAGS)
+$(NAME_unit_cov): LDLIBS   := -L/opt/homebrew/opt/criterion/lib -lcriterion -lpthread
+$(NAME_unit_cov): LDFLAGS  := $(COV_FLAGS)
+$(NAME_unit_cov): | $(PROF_DIR)
+
+$(NAME_main_cov): CXXFLAGS := $(CXXFLAGS) $(COV_FLAGS)
+$(NAME_main_cov): LDFLAGS  := $(COV_FLAGS)
+$(NAME_main_cov): | $(PROF_DIR)
+
+.PHONY: cov
+cov: $(NAME_unit_cov) $(NAME_main_cov)
+	@ mkdir -p $(PROF_DIR)
+	@ rm -f $(PROF_DIR)/*.profraw
+	LLVM_PROFILE_FILE="$(PROF_DIR)/unit-%p.profraw" \
+		./$(NAME_unit_cov) || true
+	LLVM_PROFILE_FILE="$(PROF_DIR)/func-%p.profraw" \
+		PLAZZA_BIN="$(abspath $(NAME_main_cov))" \
+		python3 $(TESTS_DIR)/functional/test_plazza.py || true
+	llvm-profdata merge -sparse $(PROF_DIR)/*.profraw -o $(PROF_DATA)
+	llvm-cov report $(NAME_main_cov) $(NAME_unit_cov) \
+		-instr-profile=$(PROF_DATA) \
+		--ignore-filename-regex='test_plazza\.cpp'
+
+.PHONY: all clean fclean re tests_unit tests_functional tests_run cov
 
 PREFIX ?=
 BINDIR ?= $(PREFIX)/bin

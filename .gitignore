@@ -1,3 +1,4 @@
+unit_tests
 plazza
 .build
 clang++
