@@ -218,7 +218,7 @@ void Reception::printStatus() {
       stock << "  Stock: ";
       for (int j = 0; j < INGREDIENT_COUNT; j++)
         stock << ingredientName(j) << "=" << res.stock[j] << " ";
-      LOG_DEBUG(stock.str());
+      LOG_INFO(stock.str());
     } else {
       LOG_WARN("Kitchen #" + std::to_string(i + 1) +
                " did not respond in time");

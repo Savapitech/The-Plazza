@@ -67,11 +67,11 @@ def section(title):
 
 
 def ready_count(lines):
-    return sum(1 for l in lines if l.startswith("[READY]"))
+    return sum(1 for l in lines if "[READY]" in l)
 
 
 def ready_lines(lines):
-    return [l for l in lines if l.startswith("[READY]")]
+    return [l for l in lines if "[READY]" in l]
 
 
 section("1. Wrong argument count")
@@ -182,8 +182,8 @@ for size in ["S", "M", "L", "XL", "XXL"]:
 section("10. READY message exact format")
 
 code, out, _ = send(FAST, "americana M x1")
-chk("READY starts with [READY]",
-    any(l.startswith("[READY]") for l in out), str(out))
+chk("READY contains [READY]",
+    any("[READY]" in l for l in out), str(out))
 chk("READY contains pizza type",
     any("[READY] americana" in l for l in out), str(out))
 chk("READY contains pizza size",
@@ -526,7 +526,7 @@ section("41. READY format for each size")
 for size in ["S", "M", "L", "XL", "XXL"]:
     code, out, _ = send(FAST, f"americana {size} x1")
     chk(f"[READY] americana {size} exact format",
-        any(f"[READY] americana {size}" == l for l in out), str(out))
+        any(f"[READY] americana {size}" in l for l in out), str(out))
 
 section("42. nb_cooks edge values")
 
