@@ -5,9 +5,11 @@
 ** Parsing
 */
 
+#include <iostream>
 #include <sstream>
 
 #include "Parsing.hpp"
+#include "PizzaFactory.hpp"
 
 static std::vector<std::string> splitBy(const std::string &s, char delim) {
   std::vector<std::string> parts;
