@@ -66,9 +66,9 @@ Reception::~Reception() {
             }
         }
     }
-    for (auto &k : _kitchens) {
-        if (k.pid > 0)
-            waitpid(k.pid, nullptr, 0);
+    while (!_kitchens.empty()) {
+        pollKitchens();
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
 

@@ -22,11 +22,16 @@ Kitchen::Kitchen(Channel &channel, int nbCooks, float multiplier,
 }
 
 void Kitchen::replenishLoop() {
+    int elapsed = 0;
     while (_running) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(_replenishMs));
-        std::unique_lock<std::mutex> lock(_stockMutex.native());
-        for (int &s : _stock)
-            s++;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        elapsed += 10;
+        if (elapsed >= _replenishMs) {
+            elapsed = 0;
+            std::unique_lock<std::mutex> lock(_stockMutex.native());
+            for (int &s : _stock)
+                s++;
+        }
     }
 }
 
@@ -136,11 +141,11 @@ void Kitchen::run() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    _running = false;
-    _replenishThread.join();
-
     while (load() > 0)
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    _running = false;
+    _replenishThread.join();
 
     Message closed{};
     closed.type = MsgType::CLOSED;
