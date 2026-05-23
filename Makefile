@@ -97,10 +97,19 @@ UNIT_INC := -std=c++20 \
             -Isrc/Kitchen -Isrc/Reception \
             -Wall -Wextra
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+CRITERION_INC  := -I/opt/homebrew/opt/criterion/include
+CRITERION_LIBS := -L/opt/homebrew/opt/criterion/lib -lcriterion
+else
+CRITERION_INC  :=
+CRITERION_LIBS := -lcriterion
+endif
+
 $(eval $(call mk-profile, unit, UNIT_SRC, , $(TESTS_DIR)/unit/unit_tests))
 
-$(NAME_unit): CXXFLAGS := $(UNIT_INC) -I/opt/homebrew/opt/criterion/include
-$(NAME_unit): LDLIBS := -L/opt/homebrew/opt/criterion/lib -lcriterion -lpthread
+$(NAME_unit): CXXFLAGS := $(UNIT_INC) $(CRITERION_INC)
+$(NAME_unit): LDLIBS := $(CRITERION_LIBS) -lpthread
 
 .PHONY: tests_unit
 tests_unit: $(NAME_unit)
@@ -123,8 +132,8 @@ $(eval $(call mk-profile, main_cov, SRC,       , $(PROF_DIR)/plazza_cov))
 $(PROF_DIR):
 	@ mkdir -p $@
 
-$(NAME_unit_cov): CXXFLAGS := $(UNIT_INC) -I/opt/homebrew/opt/criterion/include $(COV_FLAGS)
-$(NAME_unit_cov): LDLIBS   := -L/opt/homebrew/opt/criterion/lib -lcriterion -lpthread
+$(NAME_unit_cov): CXXFLAGS := $(UNIT_INC) $(CRITERION_INC) $(COV_FLAGS)
+$(NAME_unit_cov): LDLIBS   := $(CRITERION_LIBS) -lpthread
 $(NAME_unit_cov): LDFLAGS  := $(COV_FLAGS)
 $(NAME_unit_cov): | $(PROF_DIR)
 
