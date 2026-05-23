@@ -6,6 +6,7 @@
 */
 
 #include "Parsing.hpp"
+#include "PizzaFactory.hpp"
 #include "ThreadPool.hpp"
 #include <atomic>
 #include <chrono>
