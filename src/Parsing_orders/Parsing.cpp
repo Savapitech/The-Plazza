@@ -5,9 +5,9 @@
 ** Parsing
 */
 
-#include <iostream>
 #include <sstream>
 
+#include "Logger/Logger.hpp"
 #include "Parsing.hpp"
 #include "PizzaFactory.hpp"
 
@@ -48,24 +48,24 @@ plazza::Parsing::parsingOrder(std::string orderLine) {
   for (auto &chunk : splitBy(orderLine, ';')) {
     auto words = splitWords(chunk);
     if (words.size() != 3) {
-      std::cerr << "Invalid order: [" << chunk << "]" << std::endl;
+      LOG_WARN("Invalid order: [" + chunk + "]");
       continue;
     }
 
     auto itType = stringToPizzaType.find(words[0]);
     if (itType == stringToPizzaType.end()) {
-      std::cerr << "Unknown pizza type: [" << words[0] << "]" << std::endl;
+      LOG_WARN("Unknown pizza type: [" + words[0] + "]");
       continue;
     }
 
     auto itSize = stringToPizzaSize.find(words[1]);
     if (itSize == stringToPizzaSize.end()) {
-      std::cerr << "Unknown pizza size: [" << words[1] << "]" << std::endl;
+      LOG_WARN("Unknown pizza size: [" + words[1] + "]");
       continue;
     }
 
     if (!validQuantity(words[2])) {
-      std::cerr << "Invalid quantity: [" << words[2] << "]" << std::endl;
+      LOG_WARN("Invalid quantity: [" + words[2] + "]");
       continue;
     }
 

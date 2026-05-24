@@ -1,15 +1,13 @@
-#include <iostream>
-
 #include "Logger/Logger.hpp"
 #include "Reception.hpp"
 
 static void usage(const char *prog) {
-  std::cerr << "Usage: " << prog
-            << " multiplier nb_cooks ingredient_replenish_time" << std::endl;
+  LOG_ERROR(std::string("Usage: ") + prog +
+            " multiplier nb_cooks ingredient_replenish_time");
 }
 
 int main(int argc, char **argv) {
-  std::cout << "The Plazza, the best pizzeria" << std::endl;
+  LOG_INFO("The Plazza, the best pizzeria");
 
   if (argc != 4) {
     usage(argv[0]);
