@@ -1,6 +1,6 @@
 MAKE_FLAGS += -j
 
-SRC := $(wildcard src/*.cpp) $(wildcard src/Pizza/*.cpp) $(wildcard src/Pizza/Pizzas/*.cpp) $(wildcard src/IPC/*.cpp) $(wildcard src/Logger/*.cpp) $(wildcard src/Parsing_orders/*.cpp) $(wildcard src/Concurrency/*.cpp) $(wildcard src/Kitchen/*.cpp) $(wildcard src/Reception/*.cpp)
+SRC := $(wildcard src/*.cpp) $(wildcard src/Pizza/*.cpp) $(wildcard src/Pizza/Pizzas/*.cpp) $(wildcard src/IPC/*.cpp) $(wildcard src/Logger/*.cpp) $(wildcard src/Parsing_orders/*.cpp) $(wildcard src/Concurrency/*.cpp) $(wildcard src/Kitchen/*.cpp) $(wildcard src/Reception/*.cpp) $(wildcard src/Terminal/*.cpp)
 
 BUILD_DIR := .build
 
@@ -21,6 +21,7 @@ CXXFLAGS += -Isrc/Logger
 CXXFLAGS += -Isrc/Concurrency
 CXXFLAGS += -Isrc/Kitchen
 CXXFLAGS += -Isrc/Reception
+CXXFLAGS += -Isrc/Terminal
 
 LDLIBS += -lpthread
 

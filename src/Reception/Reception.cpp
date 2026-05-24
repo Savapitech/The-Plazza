@@ -1,13 +1,15 @@
-#include "Reception.hpp"
-#include "Kitchen.hpp"
-#include "Logger/Logger.hpp"
-#include "Parsing.hpp"
 #include <algorithm>
 #include <chrono>
 #include <poll.h>
 #include <sstream>
 #include <sys/wait.h>
 #include <thread>
+
+#include "Kitchen.hpp"
+#include "Logger/Logger.hpp"
+#include "Parsing.hpp"
+#include "Reception.hpp"
+#include "Terminal/Terminal.hpp"
 
 static const char *ingredientName(int idx) {
   static const char *names[plazza::INGREDIENT_COUNT] = {
@@ -75,6 +77,7 @@ void Reception::spawnKitchen() {
   if (pid == -1)
     throw std::runtime_error("fork failed");
   if (pid == 0) {
+    Terminal::detach();
     ch->childSide();
     {
       Kitchen kitchen(*ch, _nbCooks, _multiplier, _replenishMs);
@@ -227,6 +230,7 @@ void Reception::printStatus() {
 }
 
 void Reception::run() {
+  Terminal::Guard tg;
   std::string line;
   while (true) {
     pollKitchens();
@@ -234,17 +238,19 @@ void Reception::run() {
     struct pollfd pfd{STDIN_FILENO, POLLIN, 0};
     int ret = poll(&pfd, 1, 50);
     if (ret > 0 && (pfd.revents & POLLIN)) {
-      if (!std::getline(std::cin, line))
+      auto res = Terminal::readChar(line);
+      if (res == Terminal::ReadResult::Eof)
         break;
-      line.erase(0, line.find_first_not_of(" \t"));
-      if (auto last = line.find_last_not_of(" \t"); last != std::string::npos)
-        line.erase(last + 1);
-      if (line.empty())
-        continue;
-      if (line == "status") {
-        printStatus();
-      } else {
-        handleOrder(line);
+      if (res == Terminal::ReadResult::Line) {
+        line.erase(0, line.find_first_not_of(" \t"));
+        if (auto last = line.find_last_not_of(" \t"); last != std::string::npos)
+          line.erase(last + 1);
+        if (line.empty())
+          continue;
+        if (line == "status")
+          printStatus();
+        else
+          handleOrder(line);
       }
     } else if (ret < 0) {
       break;
