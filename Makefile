@@ -93,9 +93,9 @@ UNIT_SRC := $(TESTS_DIR)/unit/test_plazza.cpp \
             src/Concurrency/ThreadPool.cpp
 
 UNIT_INC := -std=c++20 \
-            -Isrc/Pizza -Isrc/Pizza/Pizzas -Isrc/Parsing_orders \
+            -Isrc -Isrc/Pizza -Isrc/Pizza/Pizzas -Isrc/Parsing_orders \
             -Isrc/IPC -Isrc/Logger -Isrc/Concurrency \
-            -Isrc/Kitchen -Isrc/Reception \
+            -Isrc/Kitchen -Isrc/Reception -Isrc/Logger \
             -Wall -Wextra
 
 UNAME_S := $(shell uname -s)
