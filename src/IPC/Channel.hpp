@@ -1,6 +1,8 @@
 #pragma once
 
 #include <poll.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 
 #include "IPizza.hpp"
 
@@ -43,8 +45,7 @@ public:
   bool tryRead(Message &msg);
 
 private:
-  int _toChild[2];
-  int _toParent[2];
+  int _sv[2];
   int _rfd;
   int _wfd;
 

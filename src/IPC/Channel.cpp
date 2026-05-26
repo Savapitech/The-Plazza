@@ -2,6 +2,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include "Channel.hpp"
@@ -31,17 +32,15 @@ static const char *msgTypeName(MsgType t) {
   return "UNKNOWN";
 }
 
-Channel::Channel() : _rfd(-1), _wfd(-1) {
-  if (::pipe(_toChild) == -1 || ::pipe(_toParent) == -1)
-    throw std::runtime_error(errstr("pipe"));
+Channel::Channel() : _sv{-1, -1}, _rfd(-1), _wfd(-1) {
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, _sv) == -1)
+    throw std::runtime_error(errstr("socketpair"));
   LOG_DEBUG("Channel created");
 }
 
 Channel::~Channel() {
-  closeFd(_toChild[0]);
-  closeFd(_toChild[1]);
-  closeFd(_toParent[0]);
-  closeFd(_toParent[1]);
+  closeFd(_sv[0]);
+  closeFd(_sv[1]);
 }
 
 void Channel::closeFd(int &fd) {
@@ -52,18 +51,14 @@ void Channel::closeFd(int &fd) {
 }
 
 void Channel::parentSide() {
-  closeFd(_toChild[0]);
-  closeFd(_toParent[1]);
-  _wfd = _toChild[1];
-  _rfd = _toParent[0];
+  closeFd(_sv[1]);
+  _rfd = _wfd = _sv[0];
   LOG_DEBUG("Channel configured as parent");
 }
 
 void Channel::childSide() {
-  closeFd(_toChild[1]);
-  closeFd(_toParent[0]);
-  _rfd = _toChild[0];
-  _wfd = _toParent[1];
+  closeFd(_sv[0]);
+  _rfd = _wfd = _sv[1];
   LOG_DEBUG("Channel configured as child");
 }
 
