@@ -1,5 +1,6 @@
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <streambuf>
 #include <string>
 #include <termios.h>
@@ -75,7 +76,7 @@ public:
   explicit PromptBuf(std::streambuf *orig) : _orig(orig) {}
 };
 
-static PromptBuf *s_promptBuf = nullptr;
+static std::unique_ptr<PromptBuf> s_promptBuf;
 
 Guard::Guard() {
   tcgetattr(STDIN_FILENO, &s_orig);
@@ -86,8 +87,8 @@ Guard::Guard() {
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
   s_origBuf = std::cout.rdbuf();
-  s_promptBuf = new PromptBuf(s_origBuf);
-  std::cout.rdbuf(s_promptBuf);
+  s_promptBuf = std::make_unique<PromptBuf>(s_origBuf);
+  std::cout.rdbuf(s_promptBuf.get());
   s_active = true;
   readrawPrompt();
 }
@@ -95,8 +96,7 @@ Guard::Guard() {
 Guard::~Guard() {
   s_active = false;
   std::cout.rdbuf(s_origBuf);
-  delete s_promptBuf;
-  s_promptBuf = nullptr;
+  s_promptBuf.reset();
   writeOrig(CLEAR);
   s_origBuf->pubsync();
   s_origBuf = nullptr;
@@ -107,7 +107,7 @@ void detach() {
   if (s_origBuf)
     std::cout.rdbuf(s_origBuf);
   s_active = false;
-  s_promptBuf = nullptr;
+  s_promptBuf.reset();
   s_origBuf = nullptr;
 }
 
