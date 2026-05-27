@@ -113,7 +113,10 @@ void detach() {
 
 ReadResult readChar(std::string &out) {
   char c;
-  if (read(STDIN_FILENO, &c, 1) != 1)
+  ssize_t n = read(STDIN_FILENO, &c, 1);
+  if (n == 0)
+    return ReadResult::Eof;
+  if (n < 0)
     return ReadResult::Nothing;
 
   if (c == 4)

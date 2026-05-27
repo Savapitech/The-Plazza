@@ -254,6 +254,8 @@ void Reception::run() {
       }
     } else if (ret < 0) {
       break;
+    } else if (ret > 0 && (pfd.revents & POLLHUP)) {
+      break;
     }
   }
 }
