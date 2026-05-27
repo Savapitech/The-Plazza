@@ -2,22 +2,22 @@
 
 #include <memory>
 #include <queue>
-#include <unistd.h>
 #include <vector>
 
 #include "Channel.hpp"
+#include "Concurrency/Process.hpp"
 
 namespace plazza {
 
 struct KitchenHandle {
-  pid_t pid;
+  Process process;
   std::unique_ptr<Channel> channel;
   int load;
   bool closed;
   std::queue<Message> pending;
 
-  KitchenHandle(pid_t p, std::unique_ptr<Channel> ch)
-      : pid(p), channel(std::move(ch)), load(0), closed(false) {}
+  KitchenHandle(std::unique_ptr<Channel> ch)
+      : channel(std::move(ch)), load(0), closed(false) {}
 
   KitchenHandle(const KitchenHandle &) = delete;
   KitchenHandle &operator=(const KitchenHandle &) = delete;

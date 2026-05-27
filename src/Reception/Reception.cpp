@@ -2,7 +2,6 @@
 #include <chrono>
 #include <poll.h>
 #include <sstream>
-#include <sys/wait.h>
 #include <thread>
 
 #include "Kitchen.hpp"
@@ -56,7 +55,7 @@ Reception::Reception(float multiplier, int nbCooks, int replenishMs)
 
 Reception::~Reception() {
   for (auto &k : _kitchens) {
-    if (!k.closed && k.pid > 0) {
+    if (!k.closed && k.process.running()) {
       Message msg{};
       msg.type = MsgType::CLOSE;
       try {
@@ -73,20 +72,17 @@ Reception::~Reception() {
 
 void Reception::spawnKitchen() {
   auto ch = std::make_unique<Channel>();
-  pid_t pid = fork();
-  if (pid == -1)
-    throw std::runtime_error("fork failed");
-  if (pid == 0) {
+  KitchenHandle handle(std::move(ch));
+
+  handle.process.start([&handle, this]() {
     Terminal::detach();
-    ch->childSide();
-    {
-      Kitchen kitchen(*ch, _nbCooks, _multiplier, _replenishMs);
-      kitchen.run();
-    }
-    _exit(0);
-  }
-  ch->parentSide();
-  _kitchens.emplace_back(pid, std::move(ch));
+    handle.channel->childSide();
+    Kitchen kitchen(*handle.channel, _nbCooks, _multiplier, _replenishMs);
+    kitchen.run();
+  });
+
+  handle.channel->parentSide();
+  _kitchens.push_back(std::move(handle));
   LOG_INFO("Spawned kitchen #" + std::to_string(_kitchens.size()));
 }
 
@@ -135,8 +131,7 @@ void Reception::pollKitchens() {
                  pizzaSizeName(msg.pizzaSize));
       } else if (msg.type == MsgType::CLOSED) {
         k.closed = true;
-        waitpid(k.pid, nullptr, WNOHANG);
-        k.pid = -1;
+        k.process.wait();
         break;
       } else {
         k.pending.push(msg);
@@ -197,8 +192,7 @@ void Reception::printStatus() {
                      " " + pizzaSizeName(m.pizzaSize));
           } else if (m.type == MsgType::CLOSED) {
             _kitchens[i].closed = true;
-            waitpid(_kitchens[i].pid, nullptr, WNOHANG);
-            _kitchens[i].pid = -1;
+            _kitchens[i].process.wait();
             LOG_WARN("Kitchen #" + std::to_string(i + 1) +
                      " closed unexpectedly during status poll");
             break;
