@@ -13,8 +13,6 @@ CXXFLAGS += -Wwrite-strings -Werror=format-nonliteral -Werror=return-type
 CXXFLAGS += -std=c++20 -iquote src -iquote src/Server -iquote src/Client -iquote libs/myteams
 CXXFLAGS += -Isrc/Pizza
 CXXFLAGS += -Isrc/Pizza/Pizzas
-CXXFLAGS += -Isrc/Kitchens
-CXXFLAGS += -lpthread
 CXXFLAGS += -Isrc/Parsing_orders
 CXXFLAGS += -Isrc/IPC
 CXXFLAGS += -Isrc/Logger
